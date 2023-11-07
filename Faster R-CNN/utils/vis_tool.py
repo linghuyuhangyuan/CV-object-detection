@@ -6,26 +6,11 @@ from matplotlib import pyplot
 
 
 VOC_BBOX_LABEL_NAMES = (
-    'fly',
-    'bike',
-    'bird',
-    'boat',
-    'pin',
-    'bus',
-    'c',
-    'cat',
-    'chair',
-    'cow',
-    'table',
-    'dog',
-    'horse',
-    'moto',
-    'p',
-    'plant',
-    'shep',
-    'sofa',
-    'train',
-    'tv',
+    "aeroplane", "bicycle", "bird", "boat",
+    "bottle", "bus", "car", "cat", "chair",
+    "cow", "diningtable", "dog", "horse",
+    "motorbike", "person", "pottedplant",
+    "sheep", "sofa", "train", "tvmonitor"
 )
 
 
@@ -119,6 +104,7 @@ def vis_bbox(img, bbox, label=None, score=None, ax=None):
                     ': '.join(caption),
                     style='italic',
                     bbox={'facecolor': 'white', 'alpha': 0.5, 'pad': 0})
+    ax.figure.savefig('imgs/demo_result.jpg')
     return ax
 
 
