@@ -131,7 +131,6 @@ def predict(model, image):
     transform = transforms.Compose([transforms.ToTensor(), ])
     img = transform(img) # torch.Size([3, 448, 448])
     img = img[None, :, :, :] # img: torch.Size([1, 3, 448, 448])
-    img = img.cuda()
 
     pred = model(img) # 1x14x14x30
     pred = pred.cpu()
@@ -155,7 +154,6 @@ if __name__ == "__main__":
     print("load model...")
     model.load_state_dict(torch.load("checkpoints/best.pth"))
     model.eval()
-    model.cuda()
     image_name = "imgs/demo1.jpg"
     image = cv2.imread(image_name)
     print("predicting...")
@@ -171,6 +169,3 @@ if __name__ == "__main__":
         cv2.putText(image, label, (p1[0], p1[1] + baseline), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 1, 8)
 
     cv2.imwrite("imgs/demo_result.jpg", image)
-    img = cv2.imread("imgs/demo_result.jpg")
-    cv2.imshow("img", img)
-    cv2.waitKey(0)
