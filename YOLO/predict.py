@@ -152,9 +152,9 @@ def predict(model, image):
 if __name__ == "__main__":
     model = resnet50()
     print("load model...")
-    model.load_state_dict(torch.load("checkpoints/best.pth"))
+    model.load_state_dict(torch.load("./yolo.pth"))
     model.eval()
-    image_name = "imgs/demo1.jpg"
+    image_name = "imgs/demo.jpg"
     image = cv2.imread(image_name)
     print("predicting...")
     result = predict(model, image)

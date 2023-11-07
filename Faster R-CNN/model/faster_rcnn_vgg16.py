@@ -6,21 +6,19 @@ from torchvision.ops import RoIPool
 from model.region_proposal_network import RegionProposalNetwork
 from model.faster_rcnn import FasterRCNN
 from utils import array_tool
-from utils.config import opt
 
 
 def decom_vgg16():
     # the 30th layer of features is relu of conv5_3
-    model = vgg16(not opt.load_path)
+    model = vgg16(True)
 
     features = list(model.features)[:30]
     classifier = model.classifier
 
     classifier = list(classifier)
     del classifier[6]
-    if not opt.use_drop:
-        del classifier[5]
-        del classifier[2]
+    del classifier[5]
+    del classifier[2]
     classifier = nn.Sequential(*classifier)
 
     # freeze top4 conv

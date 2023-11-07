@@ -17,10 +17,3 @@ def totensor(data, cuda=False):
     if cuda:
         tensor = tensor.cuda()
     return tensor
-
-
-def scalar(data):
-    if isinstance(data, np.ndarray):
-        return data.reshape(1)[0]
-    if isinstance(data, torch.Tensor):
-        return data.item()

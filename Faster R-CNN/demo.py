@@ -9,7 +9,7 @@ from utils.vis_tool import vis_bbox
 img = read_image('imgs/demo.jpg')
 img = torch.from_numpy(img)[None]
 faster_rcnn = FasterRCNNVGG16()
-state_dict = torch.load('./fasterrcnn_12211511_0.701052458187_torchvision_pretrain.pth')
+state_dict = torch.load('./fasterrcnn.pth')
 faster_rcnn.load_state_dict(state_dict['model'])
 _bboxes, _labels, _scores = faster_rcnn.predict(img, visualize=True)
 vis_bbox(array_tool.tonumpy(img[0]), array_tool.tonumpy(_bboxes[0]), array_tool.tonumpy(_labels[0]).reshape(-1), array_tool.tonumpy(_scores[0]).reshape(-1))
