@@ -6,7 +6,6 @@ from torchvision.ops import nms
 
 from data.dataset import preprocess
 from model.utils.bbox_tools import loc2bbox
-# from model.utils.nms import non_maximum_suppression
 from utils import array_tool
 from utils.config import opt
 
