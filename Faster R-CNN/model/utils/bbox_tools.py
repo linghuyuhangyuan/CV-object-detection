@@ -62,18 +62,18 @@ def loc2bbox(src_bbox, loc):
 
     # src_ctr_x, src_ctr_y: Bbox中心点的坐标
     # src_width, src_height: Bbox的宽高
-    ctr_y = 
-    ctr_x = 
-    h = 
-    w = 
+    # ctr_y = 
+    # ctr_x = 
+    # h = 
+    # w = 
 
     # 根据更新后Bbox中心点的坐标ctr_x, ctr_y以及宽高h, w
     # 来计算Bbox左上角和右下角的坐标
     dst_bbox = np.zeros(loc.shape, dtype=loc.dtype)
-    dst_bbox[:, 0::4] = 
-    dst_bbox[:, 1::4] = 
-    dst_bbox[:, 2::4] = 
-    dst_bbox[:, 3::4] = 
+    # dst_bbox[:, 0::4] = 
+    # dst_bbox[:, 1::4] = 
+    # dst_bbox[:, 2::4] = 
+    # dst_bbox[:, 3::4] = 
 
     return dst_bbox
 
@@ -119,8 +119,8 @@ def generate_anchor_base(base_size=16, ratios=[0.5, 1, 2],
     anchor_base = np.zeros((len(ratios) * len(anchor_scales), 4), dtype=np.float32)
     for i in six.moves.range(len(ratios)):
         for j in six.moves.range(len(anchor_scales)):
-            h = # aspect_ratios是长宽比，当h_ratios=sqrt(aspect_ratios)
-            w = # w_ratios=1/sqrt(aspect_ratios)时，h_ratios/w_ratios正好==aspect_ratios
+            # h = # aspect_ratios是长宽比，当h_ratios=sqrt(aspect_ratios)
+            # w = # w_ratios=1/sqrt(aspect_ratios)时，h_ratios/w_ratios正好==aspect_ratios
 
             index = i * len(anchor_scales) + j
             anchor_base[index, 0] = py - h / 2.

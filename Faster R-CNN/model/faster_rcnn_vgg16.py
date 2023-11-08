@@ -12,7 +12,7 @@ def decom_vgg16():
     # the 30th layer of features is relu of conv5_3
     model = vgg16(True)
 
-    extractor = # 根据PPT上所示的Extractor网络架构图，补全extractor
+    # extractor = # 根据PPT上所示的Extractor网络架构图，补全extractor
     classifier = model.classifier
 
     classifier = list(classifier)
@@ -96,8 +96,8 @@ class VGG16RoIHead(nn.Module):
         super(VGG16RoIHead, self).__init__()
 
         self.classifier = classifier
-        self.cls_loc = # 线性层用于回归任务
-        self.score = # 线性层用于分类任务
+        # self.cls_loc = # 线性层用于回归任务
+        # self.score = # 线性层用于分类任务
 
         normal_init(self.cls_loc, 0, 0.001)
         normal_init(self.score, 0, 0.01)
@@ -105,7 +105,7 @@ class VGG16RoIHead(nn.Module):
         self.n_class = n_class
         self.roi_size = roi_size
         self.spatial_scale = spatial_scale
-        self.roi = # ROIPooling层
+        # self.roi = # ROIPooling层
 
     def forward(self, x, rois, roi_indices):
         """Forward the chain.

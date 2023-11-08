@@ -51,9 +51,9 @@ class RegionProposalNetwork(nn.Module):
         self.feat_stride = feat_stride
         self.proposal_layer = ProposalCreator(self, **proposal_creator_params)
         n_anchor = self.anchor_base.shape[0]
-        self.conv1 = # 3*3卷积
-        self.score = # 1*1卷积用于分类任务
-        self.loc = # 1*1卷积用于回归任务
+        # self.conv1 = # 3*3卷积
+        # self.score = # 1*1卷积用于分类任务
+        # self.loc = # 1*1卷积用于回归任务
         normal_init(self.conv1, 0, 0.01)
         normal_init(self.score, 0, 0.01)
         normal_init(self.loc, 0, 0.01)
