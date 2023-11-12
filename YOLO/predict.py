@@ -36,6 +36,8 @@ def decoder(pred):
     pred = pred.squeeze(0)  # torch.Size([14, 14, 30])
     # [中心坐标,长宽,置信度,中心坐标,长宽,置信度, 20个类别] x 7x7
     # contain1 = # 从pred中取出bbox1的置信度
+    contain1 = pred[:,:,4].unsqueeze(2)
+    contain2 = pred[:,:,9].unsqueeze(2)
     # contain2 = # 从pred中取出bbox2的置信度
     contain = torch.cat((contain1, contain2), 2) # torch.Size([14, 14, 2])
 
@@ -49,14 +51,19 @@ def decoder(pred):
             for b in range(2):
                 if mask[i, j, b] == 1:
                     # box = # 从pred中取出bbox的中心坐标及宽高
+                    box = pred[i,j,b*5:b*5+4]
                     # contain_prob = # 从pred中取出bbox的置信度
+                    contain_prob = torch.FloatTensor([pred[i,j,b*5+4]])
                     xy = torch.FloatTensor([j, i]) * cell_size # cell左上角 up left of cell
                     box[:2] = box[:2] * cell_size + xy # return cxcy relative to image
                     box_xy = torch.FloatTensor(box.size()) # 转换成xy形式 convert[cx, cy, w, h] to [x1, y1, x2, y2]
                     # box[:2]是bbox的中心坐标，box[2:]是bbox的宽高
                     # box_xy[:2] = # 计算出bbox左上角的坐标
                     # box_xy[2:] = # 计算出bbox右下角的坐标
+                    box_xy[:2] = box[:2] - 0.5*box[2:]
+                    box_xy[2:] = box[:2] + 0.5*box[2:]
                     # max_prob, cls_index = # 从pred中取出20个类别的概率，并得到最大值及其索引
+                    max_prob,cls_index = torch.max(pred[i,j,10:],0)
                     if float((contain_prob * max_prob)[0]) > 0.1:
                         boxes.append(box_xy.view(1, 4))
                         cls_indexs.append(cls_index.item())
@@ -94,7 +101,20 @@ def nms(bboxes, scores, threshold=0.5):
         keep.append(i)
 
         # 计算box[i]与其余各框box[order[1:]]的IOU
+        if order.numel() == 1:
+            break
+
+        xx1 = x1[order[1:]].clamp(min=x1[i])
+        yy1 = y1[order[1:]].clamp(min=y1[i])
+        xx2 = x2[order[1:]].clamp(max=x2[i])
+        yy2 = y2[order[1:]].clamp(max=y2[i])
+
+        w = (xx2-xx1).clamp(min=0)
+        h = (yy2-yy1).clamp(min=0)
+        inter = w*h
+        
         # ovr = 
+        ovr = inter / (areas[i] + areas[order[1:]] - inter)
         ids = (ovr <= threshold).nonzero(as_tuple=False).squeeze() # 注意此时idx为[N - 1,], 而order为[N, ]
         if ids.numel() == 0:
             break
