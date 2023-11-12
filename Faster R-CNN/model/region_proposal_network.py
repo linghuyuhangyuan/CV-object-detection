@@ -54,6 +54,9 @@ class RegionProposalNetwork(nn.Module):
         # self.conv1 = # 3*3卷积
         # self.score = # 1*1卷积用于分类任务
         # self.loc = # 1*1卷积用于回归任务
+        self.conv1 = nn.Conv2d(in_channels, mid_channels, 3, 1, 1)
+        self.score = nn.Conv2d(mid_channels, n_anchor * 2, 1, 1, 0)
+        self.loc = nn.Conv2d(mid_channels, n_anchor * 4, 1, 1, 0)
         normal_init(self.conv1, 0, 0.01)
         normal_init(self.score, 0, 0.01)
         normal_init(self.loc, 0, 0.01)

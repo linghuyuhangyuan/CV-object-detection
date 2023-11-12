@@ -17,8 +17,8 @@ def loc2bbox(src_bbox, loc):
 
     * :math:`\\hat{g}_y = p_h t_y + p_y`
     * :math:`\\hat{g}_x = p_w t_x + p_x`
-    * :math:`\\hat{g}_h = p_h \\exp(t_h)`
-    * :math:`\\hat{g}_w = p_w \\exp(t_w)`
+    * :math:`\\hat{g}_h = p_h \\enp(t_h)`
+    * :math:`\\hat{g}_w = p_w \\enp(t_w)`
 
     The decoding formulas are used in works such as R-CNN [#]_.
 
@@ -66,7 +66,12 @@ def loc2bbox(src_bbox, loc):
     # ctr_x = 
     # h = 
     # w = 
+    ctr_y = dy * src_height[:, np.newaxis] + src_ctr_y[:, np.newaxis]
+    ctr_x = dx * src_width[:, np.newaxis] + src_ctr_x[:, np.newaxis]
+    h = np.exp(dh) * src_height[:, np.newaxis]
+    w = np.exp(dw) * src_width[:, np.newaxis]
 
+    
     # 根据更新后Bbox中心点的坐标ctr_x, ctr_y以及宽高h, w
     # 来计算Bbox左上角和右下角的坐标
     dst_bbox = np.zeros(loc.shape, dtype=loc.dtype)
@@ -74,6 +79,10 @@ def loc2bbox(src_bbox, loc):
     # dst_bbox[:, 1::4] = 
     # dst_bbox[:, 2::4] = 
     # dst_bbox[:, 3::4] = 
+    dst_bbox[:, 0::4] = ctr_y - 0.5 * h
+    dst_bbox[:, 1::4] = ctr_x - 0.5 * w
+    dst_bbox[:, 2::4] = ctr_y + 0.5 * h
+    dst_bbox[:, 3::4] = ctr_x + 0.5 * w
 
     return dst_bbox
 
@@ -121,6 +130,9 @@ def generate_anchor_base(base_size=16, ratios=[0.5, 1, 2],
         for j in six.moves.range(len(anchor_scales)):
             # h = # aspect_ratios是长宽比，当h_ratios=sqrt(aspect_ratios)
             # w = # w_ratios=1/sqrt(aspect_ratios)时，h_ratios/w_ratios正好==aspect_ratios
+
+            h = base_size * anchor_scales[j] * np.sqrt(ratios[i])
+            w = base_size * anchor_scales[j] * np.sqrt(1. / ratios[i])
 
             index = i * len(anchor_scales) + j
             anchor_base[index, 0] = py - h / 2.

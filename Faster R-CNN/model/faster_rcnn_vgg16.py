@@ -13,12 +13,13 @@ def decom_vgg16():
     model = vgg16(True)
 
     # extractor = # 根据PPT上所示的Extractor网络架构图，补全extractor
+    extractor = list(model.features)[:30]
     classifier = model.classifier
 
     classifier = list(classifier)
-    del classifier[2]
-    del classifier[5]
     del classifier[6]
+    del classifier[5]
+    del classifier[2]
     classifier = nn.Sequential(*classifier)
 
     # freeze top4 conv
@@ -98,6 +99,8 @@ class VGG16RoIHead(nn.Module):
         self.classifier = classifier
         # self.cls_loc = # 线性层用于回归任务
         # self.score = # 线性层用于分类任务
+        self.cls_loc = nn.Linear(4096, n_class * 4)
+        self.score = nn.Linear(4096, n_class)
 
         normal_init(self.cls_loc, 0, 0.001)
         normal_init(self.score, 0, 0.01)
@@ -106,6 +109,7 @@ class VGG16RoIHead(nn.Module):
         self.roi_size = roi_size
         self.spatial_scale = spatial_scale
         # self.roi = # ROIPooling层
+        self.roi = RoIPool( (self.roi_size, self.roi_size),self.spatial_scale)
 
     def forward(self, x, rois, roi_indices):
         """Forward the chain.
@@ -132,7 +136,15 @@ class VGG16RoIHead(nn.Module):
         xy_indices_and_rois = indices_and_rois[:, [0, 2, 1, 4, 3]]
         indices_and_rois = xy_indices_and_rois.contiguous()
 
+        # pool = self.roi(x, indices_and_rois)
+        
         pool = self.roi(x, indices_and_rois)
+        # print(pool)
+        # print(pool.size(0))
+        pool = pool.view(pool.size(0), -1)
+        fc7 = self.classifier(pool)
+        roi_cls_locs = self.cls_loc(fc7)
+        roi_scores = self.score(fc7)
         
         return roi_cls_locs, roi_scores
     
